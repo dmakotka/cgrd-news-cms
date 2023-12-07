@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Article Dashboard</title>
+    <link href="../src/public/css/style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <!-- Logo and Message Container -->
+    <div class="logo-and-message-container">
+      <div class="logo-container">
+        <img src="../src/public/images/logo.svg" alt="Company Logo" class="admin-logo" />
+      </div>
+      <div id="message" class="message-container"></div>
+    </div>
+
+    <main class="admin-container">
+      {% if (news|length) > 0 %}
+        <section class="news-section">
+          <h1>All News</h1>
+          {% for article in news %}
+            <article class="news-item" data-id="{{ article.id }}">
+              <!-- Display State -->
+              <div class="news-display">
+                <span class="news-title">{{ article.title }}</span>
+                <span class="news-description">{{ article.description }}</span>
+                <span class="news-actions">
+                  <img src="public/images/pencil.svg" alt="Edit" class="edit-icon" />
+                  <img src="public/images/delete.svg" alt="Delete" class="delete-icon" />
+                </span>
+              </div>
+            </article>
+          {% endfor %}
+        </section>
+      {% endif %}
+
+      <section class="create-news-section">
+        <h1>Create News</h1>
+        <!-- Create News Form -->
+        <div>
+          <form id="createNewsForm" method="post">
+            <input type="hidden" name="action" value="create" />
+            <input type="text" name="title" placeholder="Title" required />
+            <textarea name="description" placeholder="Description" required></textarea>
+            <button type="submit">Create</button>
+          </form>
+        </div>
+        <form action="logout.php" method="post" class="logout-form">
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      </section>
+    </main>
+
+    <div class="background-image"></div>
+    <script src="../src/public/js/script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,17 @@
+{
+    "name": "dotka/news_cms",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Dotka\\NewsCms\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Dorota Wroblewska"
+        }
+    ],
+    "require": {
+        "twig/twig": "^3.0"
+    }
+}
