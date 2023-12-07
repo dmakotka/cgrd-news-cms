@@ -1,15 +1,22 @@
 <?php
-session_start();
 
-require_once __DIR__ . '/config/database.php';
-require_once __DIR__ . '/config/twig.php';
-require_once __DIR__ . '/classes/User.php';
+use Models\User;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Start the session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$pdo = require_once __DIR__ . '/config/database.php';
+$twig = require_once __DIR__ . '/config/twig.php';
 
 $user = new User($pdo);
 $username = $password = $username_err = $password_err = $login_err = "";
 
 if ($user->isUserLoggedIn()) {
-    header("location: admin.php");
+    header("Location: admin.php");
     exit;
 }
 
@@ -29,7 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (empty($username_err) && empty($password_err)) {
         if ($user->login($username, $password)) {
-            header("location: admin.php");
+            header("Location: admin.php");
+            exit;
         } else {
             $login_err = "Invalid username or password.";
         }

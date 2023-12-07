@@ -3,7 +3,8 @@
     "type": "project",
     "autoload": {
         "psr-4": {
-            "Dotka\\NewsCms\\": "src/"
+            "Dotka\\NewsCms\\": "src/",
+            "Models\\": "src/classes/"
         }
     },
     "authors": [

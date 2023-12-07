@@ -138,14 +138,7 @@ button:hover {
     position: relative;
 }
 
-.logo {
-    display: block;
-    margin: auto;
-    width: auto;
-    margin-top: 25%;
-    position: relative;
-}
-
+.logo,
 .admin-logo {
     display: block;
     margin: auto;
@@ -178,8 +171,19 @@ button:hover {
     display: inline-flex;
     background-color: #0da46075;
     color: #0a7545fc;
- }
+}
 
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
 
 @media screen and (max-width: 768px) {
     .admin-logo {

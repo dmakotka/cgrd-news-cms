@@ -1,46 +1,74 @@
 <?php
 
+namespace Models;
+
+use PDO;
+use PDOException;
+
 class News
 {
-    private $pdo;
+    private PDO $pdo;
 
-    public function __construct($pdo)
+    public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
-    public function getAllNews()
+    public function getAllNews(): array
     {
-        $stmt = $this->pdo->query("SELECT * FROM news ORDER BY created_at DESC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->pdo->query("SELECT * FROM news ORDER BY created_at DESC");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Handle exception or log error as appropriate
+            return [];
+        }
     }
 
-    public function createNews($title, $description)
+    public function createNews(string $title, string $description): int
     {
         $sql = "INSERT INTO news (title, description) VALUES (:title, :description)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':title' => $title, ':description' => $description]);
-        return $this->pdo->lastInsertId();
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':title' => $title, ':description' => $description]);
+            return $this->pdo->lastInsertId();
+        } catch (PDOException $e) {
+            // Handle exception or log error as appropriate
+            return 0;
+        }
     }
 
-    public function getNewsById($id)
+    public function getNewsById(int $id): ?array
     {
         $stmt = $this->pdo->prepare("SELECT * FROM news WHERE id = :id");
         $stmt->execute([':id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
     }
 
-    public function updateNews($id, $title, $description)
+    public function updateNews(int $id, string $title, string $description): bool
     {
         $sql = "UPDATE news SET title = :title, description = :description WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $id, ':title' => $title, ':description' => $description]);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id' => $id, ':title' => $title, ':description' => $description]);
+            return true;
+        } catch (PDOException $e) {
+            // Handle exception or log error as appropriate
+            return false;
+        }
     }
 
-    public function deleteNews($id)
+    public function deleteNews(int $id): bool
     {
         $sql = "DELETE FROM news WHERE id = :id";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([':id' => $id]);
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([':id' => $id]);
+            return true;
+        } catch (PDOException $e) {
+            // Handle exception or log error as appropriate
+            return false;
+        }
     }
 }

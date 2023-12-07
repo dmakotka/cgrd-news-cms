@@ -1,45 +1,62 @@
 <?php
-session_start();
 
-require_once 'config/database.php';
-require_once 'config/twig.php';
-require_once 'classes/User.php';
-require_once 'classes/News.php';
+use Models\User;
+use Models\News;
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// Start the session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+$pdo = require_once __DIR__ . '/config/database.php';
+$twig = require_once __DIR__ . '/config/twig.php';
 
 $user = new User($pdo);
 $news = new News($pdo);
 
 // Redirect to login if not logged in
 if (!$user->isUserLoggedIn()) {
-    header("location: login.php");
+    header("Location: login.php");
     exit;
 }
 
 // Handle AJAX Requests
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    header('Content-Type: application/json');
     $action = $_POST['action'] ?? '';
-    $title = $_POST['title'] ?? '';
-    $description = $_POST['description'] ?? '';
     $id = $_POST['id'] ?? null;
-    $response = ['success' => false, 'message' => ''];
 
     try {
-        if ($action === 'create') {
-            $news->createNews($title, $description);
-            $response = ['success' => true, 'message' => "News created successfully!"];
-        } elseif ($action === 'update' && $id) {
-            $news->updateNews($id, $title, $description);
-            $response = ['success' => true, 'message' => "News updated successfully!"];
-        } elseif ($action === 'delete' && $id) {
-            $news->deleteNews($id);
-            $response = ['success' => true, 'message' => "News deleted successfully!"];
+        switch ($action) {
+            case 'create':
+                $title = $_POST['title'] ?? '';
+                $description = $_POST['description'] ?? '';
+                $newsId = $news->createNews($title, $description);
+                echo json_encode(['success' => true, 'message' => "News created successfully!", 'id' => $newsId]);
+                break;
+
+            case 'update':
+                $title = $_POST['title'] ?? '';
+                $description = $_POST['description'] ?? '';
+                $success = $news->updateNews($id, $title, $description);
+                echo json_encode(['success' => $success, 'message' => $success ? "News updated successfully!" : "Failed to update news."]);
+                break;
+
+            case 'delete':
+                $success = $news->deleteNews($id);
+                echo json_encode(['success' => $success, 'message' => $success ? "News deleted successfully!" : "Failed to delete news."]);
+                break;
+
+            default:
+                echo json_encode(['success' => false, 'message' => "No action was specified."]);
+                break;
         }
     } catch (Exception $e) {
-        $response = ['success' => false, 'message' => "Error: " . $e->getMessage()];
+        echo json_encode(['success' => false, 'message' => "Error: " . $e->getMessage()]);
     }
 
-    header('Content-Type: application/json');
-    echo json_encode($response);
     exit;
 }
 
