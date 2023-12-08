@@ -52,7 +52,6 @@ class NewsTest extends TestCase
 
         // When & Then
         $this->news->updateNews(1, 'Updated News', 'Updated Description');
-        // Assertions can be added to check whether update was successful
     }
 
     public function testDeleteNews()
@@ -64,6 +63,5 @@ class NewsTest extends TestCase
 
         // When & Then
         $this->news->deleteNews(1);
-        // Assertions can be added to check whether delete was successful
     }
 }
