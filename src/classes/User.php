@@ -8,10 +8,12 @@ use PDOException;
 class User
 {
     private PDO $pdo;
+    private ISessionHandler $sessionHandler;
 
-    public function __construct(PDO $pdo)
+    public function __construct(PDO $pdo, ISessionHandler $sessionHandler)
     {
         $this->pdo = $pdo;
+        $this->sessionHandler = $sessionHandler;
     }
 
     public function login(string $username, string $password): bool
@@ -26,7 +28,7 @@ class User
                 $this->initializeSession($user);
                 return true;
             }
-            
+
             return false;
         } catch (PDOException $e) {
             // Log and handle the exception
@@ -38,16 +40,14 @@ class User
 
     public function isUserLoggedIn(): bool
     {
-        return isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true;
+        return $this->sessionHandler->isLoggedIn();
     }
 
     private function initializeSession(array $user): void
     {
-        $_SESSION['loggedin'] = true;
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['username'] = $user['username'];
-        
-        // Regenerate session ID to prevent session fixation
-        session_regenerate_id();
+        $this->sessionHandler->setSessionData('loggedin', true);
+        $this->sessionHandler->setSessionData('user_id', $user['id']);
+        $this->sessionHandler->setSessionData('username', $user['username']);
+        $this->sessionHandler->regenerateSessionId();
     }
 }

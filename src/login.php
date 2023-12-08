@@ -1,10 +1,10 @@
 <?php
 
 use Models\User;
+use Models\SessionHandler;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Start the session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -12,7 +12,8 @@ if (session_status() === PHP_SESSION_NONE) {
 $pdo = require_once __DIR__ . '/config/database.php';
 $twig = require_once __DIR__ . '/config/twig.php';
 
-$user = new User($pdo);
+$sessionHandler = new SessionHandler();
+$user = new User($pdo, $sessionHandler);
 $username = $password = $username_err = $password_err = $login_err = "";
 
 if ($user->isUserLoggedIn()) {

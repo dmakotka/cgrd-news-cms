@@ -20,7 +20,6 @@ class News
             $stmt = $this->pdo->query("SELECT * FROM news ORDER BY created_at DESC");
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // Handle exception or log error as appropriate
             return [];
         }
     }
@@ -33,7 +32,6 @@ class News
             $stmt->execute([':title' => $title, ':description' => $description]);
             return $this->pdo->lastInsertId();
         } catch (PDOException $e) {
-            // Handle exception or log error as appropriate
             return 0;
         }
     }
@@ -54,7 +52,6 @@ class News
             $stmt->execute([':id' => $id, ':title' => $title, ':description' => $description]);
             return true;
         } catch (PDOException $e) {
-            // Handle exception or log error as appropriate
             return false;
         }
     }
@@ -67,7 +64,6 @@ class News
             $stmt->execute([':id' => $id]);
             return true;
         } catch (PDOException $e) {
-            // Handle exception or log error as appropriate
             return false;
         }
     }

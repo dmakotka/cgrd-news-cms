@@ -5,3 +5,5 @@
 src/config/database.php
 vendor/
 .DS_Store
+.phpunit.result.cache
+phpunit.xml
